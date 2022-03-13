@@ -1998,7 +1998,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
             // if we have deleted the last game, excpet for the MAMEMENU, then exit with no game selected and let a re-scan happen.
             if ([self->_gameList count] <= 1) {
                 if (self.selectGameCallback != nil)
-                    self.selectGameCallback(nil);
+                    self.selectGameCallback(@{});
             }
         }
     }];
@@ -2499,13 +2499,13 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
 }
 
 // just forward key input to EmulatorController and let it dispatch it.
-- (void)onCommandUp    { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeUp]; }
-- (void)onCommandDown  { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeDown]; }
-- (void)onCommandLeft  { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeLeft]; }
-- (void)onCommandRight { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeRight]; }
-- (void)onCommandSelect{ [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeSelect]; }
-- (void)onCommandMenu  { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeMenu]; }
-- (void)onCommandEsc   { [(id)self.presentingViewController handleButtonPress:(UIPressType)ButtonPressTypeBack]; }
+- (void)onCommandUp    { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeUp]; }
+- (void)onCommandDown  { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeDown]; }
+- (void)onCommandLeft  { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeLeft]; }
+- (void)onCommandRight { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeRight]; }
+- (void)onCommandSelect{ [(id)self.presentingViewController handleButtonPress:ButtonPressTypeSelect]; }
+- (void)onCommandMenu  { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeMenu]; }
+- (void)onCommandEsc   { [(id)self.presentingViewController handleButtonPress:ButtonPressTypeBack]; }
 
 - (NSArray*)keyCommands {
     

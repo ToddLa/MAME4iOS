@@ -11,14 +11,20 @@ import UIKit
 
 @objc enum ButtonPressType: Int {
     case none = -1
-    case up,down,left,right // *HACK* These must match UIPress.PressType
-    case select, back       // *HACK* These must match UIPress.PressType
+    case up,down,left,right,select,back    // *HACK* These must match UIPress.PressType
     case menu, options, home
+    case x,y
+    static let a = select
+    static let b = back
+}
+
+@objc protocol ControllerButtonPress {
+    func handleButtonPress(_ type: ButtonPressType)
 }
 
 // MARK: - handleButtonPress - UINavigationController
 
-extension UINavigationController {
+extension UINavigationController : ControllerButtonPress {
     
     @objc func handleButtonPress(_ type: ButtonPressType) {
         switch type {
@@ -41,7 +47,7 @@ extension UINavigationController {
 
 // MARK: - handleButtonPress - UITableViewController
 
-extension UITableViewController {
+extension UITableViewController : ControllerButtonPress {
     
     @objc func handleButtonPress(_ type: ButtonPressType) {
         switch type {
@@ -109,7 +115,7 @@ extension UITableViewController {
 }
 
 /*
-extension UIAlertController {
+extension UIAlertController : ControllerButtonPress {
     @objc func handleButtonPress(_ type: UIPress.PressType) {
         switch type {
         case .select:   // (aka A or ENTER)

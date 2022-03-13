@@ -1641,6 +1641,10 @@ ButtonPressType input_debounce(unsigned long pad_status, CGPoint stick) {
         return ButtonPressTypeSelect;
     if (changed_status & MYOSD_B)
         return ButtonPressTypeBack;
+    if (changed_status & MYOSD_X)
+        return ButtonPressTypeX;
+    if (changed_status & MYOSD_Y)
+        return ButtonPressTypeY;
     if (changed_status & MYOSD_UP)
         return ButtonPressTypeUp;
     if (changed_status & MYOSD_DOWN)
@@ -1682,10 +1686,10 @@ ButtonPressType input_debounce(unsigned long pad_status, CGPoint stick) {
             _Static_assert(UIPressTypeMenu == ButtonPressTypeBack, "");
 
              if ([target respondsToSelector:@selector(handleButtonPress:)] && !target.isBeingDismissed)
-                [(id)target handleButtonPress:(UIPressType)type];
+                [(id)target handleButtonPress:type];
 
             if ([target.navigationController respondsToSelector:@selector(handleButtonPress:)] && !target.navigationController.isBeingDismissed)
-                [(id)target.navigationController handleButtonPress:(UIPressType)type];
+                [(id)target.navigationController handleButtonPress:type];
         }
     }
 }
@@ -2535,7 +2539,7 @@ NSUInteger g_mame_key;                      // key(s) to send to mame
 static void push_mame_key(NSUInteger key)
 {
     NSCParameterAssert([NSThread isMainThread]);     // only push keys from main thread
-    NSCParameterAssert(g_mame_key == 0);
+    NSCParameterAssert(g_mame_key == 0 || g_mame_key == key || key == MYOSD_KEY_EXIT || key == MYOSD_KEY_ESC);
     g_mame_key = key;
 }
 
@@ -3736,28 +3740,29 @@ void m4i_input_poll(myosd_input_state* myosd, size_t input_size) {
 }
 
 -(void)updatePointerLocked {
-#if TARGET_OS_MACCATALYST
+    
+#if TARGET_OS_IOS && defined(__IPHONE_14_0)
     if (@available(iOS 14.0, *)) {
-        static int g_cursor_hide_count;
+        [self setNeedsUpdateOfPrefersPointerLocked];
+    
+        id cursorClass = NSClassFromString(@"NSCursor");
+        if (IsRunningOnMac() && cursorClass != nil) {
+            static int g_cursor_hide_count;
 
-        if ([self prefersPointerLocked] && self.presentedViewController == nil && g_emulation_paused == 0) {
-            [NSClassFromString(@"NSCursor") hide];
-            g_cursor_hide_count++;
-        }
-        else {
-            while (g_cursor_hide_count > 0) {
-                [NSClassFromString(@"NSCursor") unhide];
-                g_cursor_hide_count--;
+            if ([self prefersPointerLocked] && self.presentedViewController == nil && g_emulation_paused == 0) {
+                [cursorClass hide];
+                g_cursor_hide_count++;
+            }
+            else {
+                while (g_cursor_hide_count > 0) {
+                    [cursorClass unhide];
+                    g_cursor_hide_count--;
+                }
             }
         }
     }
-#elif TARGET_OS_IOS && defined(__IPHONE_14_0)
-    if (@available(iOS 14.0, *))
-        [self setNeedsUpdateOfPrefersPointerLocked];
 #endif
 }
-
-
 
 #if TARGET_OS_IOS
 
@@ -4909,8 +4914,8 @@ BOOL is_roms_dir(NSString* dir) {
 }
 
 - (void)runImport {
-    // TODO: we might need to export the `org.7-zip.7-zip-archive` type in Info.plist??
-    UIDocumentPickerViewController* documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.zip-archive", @"org.7-zip.7-zip-archive", @"org.mamedev.disk-image", @"org.mamedev.rom-image"] inMode:UIDocumentPickerModeImport];
+    // we use "public.data" to open any file, in addition to zip
+    UIDocumentPickerViewController* documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.zip-archive", @"org.7-zip.7-zip-archive", @"public.data"] inMode:UIDocumentPickerModeImport];
     documentPicker.modalPresentationStyle = UIModalPresentationFormSheet;
     documentPicker.delegate = (id<UIDocumentPickerDelegate>)self;
     documentPicker.allowsMultipleSelection = YES;
@@ -5466,7 +5471,7 @@ static unsigned long g_device_has_input[NUM_DEV];   // TRUE if device needs to b
 #if TARGET_OS_IOS
         ButtonPressType press = input_debounce(current_state, CGPointMake(controller.extendedGamepad.leftThumbstick.xAxis.value, controller.extendedGamepad.leftThumbstick.yAxis.value));
         if ([g_menu respondsToSelector:@selector(handleButtonPress:)])
-            [(id)g_menu handleButtonPress:(UIPressType)press];
+            [(id)g_menu handleButtonPress:press];
 #endif
         changed_state &= ~(MYOSD_A|MYOSD_B|MYOSD_UP|MYOSD_DOWN|MYOSD_LEFT|MYOSD_RIGHT);
     }
