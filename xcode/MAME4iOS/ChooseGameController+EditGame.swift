@@ -1,5 +1,5 @@
 //
-//  ChooseGameController.swift
+//  ChooseGameController+EditGame.swift
 //  MAME4iOS
 //
 //  Created by Todd Laney on 2/14/22.
