@@ -524,42 +524,6 @@ typedef NS_ENUM(NSInteger, LayoutMode) {
     }
 }
 
-// load the "sidecar" JSON file
--(NSDictionary*)getSoftwareInfo:(NSString*)file
-{
-    // lookup meta data from json file
-    NSDictionary* info = nil;
-    NSString* path = [getDocumentPath(file).stringByDeletingPathExtension stringByAppendingPathExtension:@"json"];
-    NSData* data = [NSData dataWithContentsOfFile:path];
-    if (data != nil)
-        info = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    if (![info isKindOfClass:[NSDictionary class]])
-        info = nil;
-    return info;
-}
-// save the "sidecar" JSON file
--(BOOL)setSoftwareInfo:(NSString*)file info:(NSDictionary*)info
-{
-    NSString* path = [file.stringByDeletingPathExtension stringByAppendingPathExtension:@"json"];
-    if (info.count == 0)
-        return [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-    NSData* data = [NSJSONSerialization dataWithJSONObject:info options:NSJSONWritingPrettyPrinted error:nil];
-    return [data writeToFile:path atomically:NO];
-}
-// update a value in a game, and save in sidecar too.
--(NSDictionary*)setGame:(NSDictionary*)game value:(NSString*)value forKey:(NSString*)key
-{
-    if (game.gameFile.length != 0) {
-        NSMutableDictionary* info = [([self getSoftwareInfo:game.gameFile] ?: @{}) mutableCopy];
-        [info setValue:value forKey:key];
-        [self setSoftwareInfo:game.gameFile info:info];
-    }
-    
-    NSMutableDictionary* info = [game mutableCopy];
-    [info setValue:value forKey:key];
-    return [info copy];
-}
-
 - (void)addSoftware:(NSMutableArray*)games
 {
     // remove any previous software
@@ -576,26 +540,21 @@ typedef NS_ENUM(NSInteger, LayoutMode) {
         if ([@[@"txt", @"json", @"png"] containsObject:file.pathExtension.lowercaseString])
             continue;
 
-        // lookup meta data from json file
-        NSDictionary* info = [self getSoftwareInfo:file];
-        
         // construct a short name
         NSString* name = file.lastPathComponent.stringByDeletingPathExtension;
         name = [name componentsSeparatedByCharactersInSet:[NSCharacterSet alphanumericCharacterSet].invertedSet].firstObject;
-        
-        [games addObject:@{
+
+        GameInfoDictionary* game = @{
             kGameInfoType:kGameInfoTypeSoftware,
             kGameInfoFile:file,
-            kGameInfoSystem:info[kGameInfoSystem] ?: @"",
-            kGameInfoMediaType:info[kGameInfoMediaType] ?: @"",
-            kGameInfoSoftwareList:info[kGameInfoSoftwareList] ?: @"",
-            kGameInfoName:info[kGameInfoName] ?: name,
-            kGameInfoDescription:info[kGameInfoDescription] ?: file.lastPathComponent.stringByDeletingPathExtension,
-            // TODO: do we want the concept of Clone for Software?
-            kGameInfoParent:info[kGameInfoParent] ?: @"",
-            kGameInfoManufacturer:info[kGameInfoManufacturer] ?: @"",
-            kGameInfoYear:info[kGameInfoYear] ?: @"",
-        }];
+            kGameInfoName:name,
+            kGameInfoDescription:file.lastPathComponent.stringByDeletingPathExtension
+        };
+        
+        // add any user custom metadata from sidecar
+        game = [game gameLoadMetadata];
+    
+        [games addObject:game];
     }
 }
 
@@ -614,6 +573,11 @@ typedef NS_ENUM(NSInteger, LayoutMode) {
     
     _gameList = [games copy];
     [self filterGameList];
+}
+
+- (void)reload
+{
+    [self setGameList:_gameList];
 }
 
 + (void)reset
@@ -1549,6 +1513,9 @@ static BOOL g_updating;
 // load image from *one* of a list of urls
 -(void)getImage:(NSArray*)urls localURL:(NSURL*)localURL completionHandler:(void (^)(UIImage* image))handler
 {
+    if (urls.count == 0 && localURL != nil)
+        return handler([UIImage imageWithContentsOfFile:localURL.path]);
+
     if (urls.count == 0)
         return handler(nil);
     
@@ -1876,14 +1843,14 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
     [self setRecent:game isRecent:TRUE];
 
     // modify the system
-    game = [self setGame:game value:system.gameName forKey:kGameInfoSystem];
+    game = [game gameSetValue:system.gameName forKey:kGameInfoSystem];
     
     // modify the media kind
     if (game.gameFile.length != 0) {
         for (NSString* media in [system.gameSoftwareMedia componentsSeparatedByString:@","]) {
             NSArray* arr = [media componentsSeparatedByString:@":"];
             if (arr.count==2 && [arr.lastObject isEqualToString:game.gameFile.pathExtension]) {
-                game = [self setGame:game value:arr.firstObject forKey:kGameInfoMediaType];
+                game = [game gameSetValue:arr.firstObject forKey:kGameInfoMediaType];
             }
         }
     }
@@ -1928,10 +1895,10 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
     NSMutableArray* files = [[NSMutableArray alloc] init];
     
     if (game.gameIsSoftware) {
-        if (all) {
-            for (NSString* ext in @[@"png", @"json", game.gameFile.pathExtension])
-                [files addObject:[NSString stringWithFormat:@"%@.%@",game.gameFile.stringByDeletingPathExtension, ext]];
-        }
+        for (NSString* ext in @[@"png", @"json"])
+            [files addObject:[game.gameFile stringByAppendingPathExtension:ext]];
+        if (all)
+            [files addObject:game.gameFile];
         return files;
     }
     
@@ -1979,7 +1946,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
         }
         
         for (NSURL* url in game.gameImageURLs)
-            [ImageCache.sharedInstance flush:url size:CGSizeZero];
+            [ImageCache.sharedInstance flush:url size:CGSizeZero localURL:game.gameLocalImageURL];
         
         if (allFiles) {
             [self setRecent:game isRecent:FALSE];
@@ -2000,6 +1967,9 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
                 if (self.selectGameCallback != nil)
                     self.selectGameCallback(@{});
             }
+        }
+        else {
+            [self reload];
         }
     }];
 }
@@ -2122,7 +2092,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
         return @[
             [UIAlertAction actionWithTitle:@"Use as Title Image" symbol:@"photo" style:UIAlertActionStyleDefault handler:^(id action) {
                 NSString* src = game.gameLocalImageURL.path;
-                NSString* dst = [NSString stringWithFormat:@"%@/%@.png", getDocumentPath(@"titles"), game.gameFile.stringByDeletingLastPathComponent];
+                NSString* dst = [[src.stringByDeletingLastPathComponent stringByReplacingOccurrencesOfString:@"/snap/" withString:@"/titles/"] stringByAppendingPathExtension:@"png"];
                 [NSFileManager.defaultManager removeItemAtPath:dst error:nil];
                 [NSFileManager.defaultManager copyItemAtPath:src toPath:dst error:nil];
                 [ImageCache.sharedInstance flush];
@@ -2141,7 +2111,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
             [UIAlertAction actionWithTitle:@"Delete" symbol:@"trash" style:UIAlertActionStyleDefault handler:^(id action) {
                 [self moveSelectionForDelete:indexPath];
                 [NSFileManager.defaultManager removeItemAtPath:game.gameLocalImageURL.path error:nil];
-                [self setGameList:self->_gameList];
+                [self reload];
             }]
         ];
     }
@@ -2209,7 +2179,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
     }
     
     // Edit
-    if (game.gameIsSoftware) {
+    if ([self canEdit:game]) {
         actions = [actions arrayByAddingObjectsFromArray:@[
             [UIAlertAction actionWithTitle:@"Edit" symbol:@"pencil" style:UIAlertActionStyleDefault handler:^(id action) {
                 [self edit:game];
@@ -3118,8 +3088,6 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
     CGFloat keyWidth = 0.0;
     for (NSString* key in _game) {
         if (![_game[key] isKindOfClass:[NSString class]] || [_game[key] length] == 0)
-            continue;
-        if ([@[kGameInfoDescription /*, kGameInfoYear, kGameInfoManufacturer*/] containsObject:key])
             continue;
         NSString* keyText = [key stringByAppendingString:@"\t"];
         NSString* valText = [_game[key] stringByAppendingString:@"\n"];

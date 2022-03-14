@@ -72,7 +72,6 @@ extern NSArray* g_import_file_types;
 @class LayoutView;
 #endif
 
-@class InfoHUD;
 @class KeyboardView;
 
 @interface EmulatorController : GCEventViewController

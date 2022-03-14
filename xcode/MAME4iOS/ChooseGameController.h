@@ -20,9 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL hideConsoles;
 
 - (void)setGameList:(NSArray<GameInfoDictionary*>*)games;
-
-// update a value in a game, and save in sidecar too.
--(GameInfoDictionary*)setGame:(GameInfoDictionary*)game value:(nullable NSString*)value forKey:(NSString*)key;
+- (void)reload;
 
 + (void)reset;
 

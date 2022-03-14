@@ -56,9 +56,9 @@ static ImageCache* sharedInstance = nil;
     [cache removeAllObjects];
 }
 
-- (void)flush:(NSURL*)url size:(CGSize)size
+- (void)flush:(NSURL*)url size:(CGSize)size localURL:(NSURL *)localURL
 {
-    [cache removeObjectForKey:[self getKey:url size:size]];
+    [cache removeObjectForKey:[self getKey:url size:size localURL:localURL]];
 }
 
 - (void)getData:(NSURL*)url localURL:(NSURL*)localURL completionHandler:(void (^)(NSData* data, NSError* error))handler
@@ -119,9 +119,10 @@ static ImageCache* sharedInstance = nil;
     });
 }
 
-- (NSString*)getKey:(NSURL*)url size:(CGSize)size
+- (NSString*)getKey:(NSURL*)url size:(CGSize)size localURL:(NSURL *)localURL
 {
     NSParameterAssert(url != nil);
+    url = localURL ?: url;
     if (size.width == 0.0 && size.height == 0.0)
         return url.path;
     else
@@ -136,7 +137,7 @@ static ImageCache* sharedInstance = nil;
 
     NSLog(@"IMAGE CACHE: getImage: %@ [%f,%f]", url.path, size.width, size.height);
     
-    NSString* key = [self getKey:url size:size];
+    NSString* key = [self getKey:url size:size localURL:localURL];
     id val = [cache objectForKey:key];
     
     if ([val isKindOfClass:[UIImage class]])
@@ -244,11 +245,11 @@ static ImageCache* sharedInstance = nil;
 }
      
 // get a image from the cache without loading.
-- (UIImage*)getImage:(NSURL*)url size:(CGSize)size
+- (UIImage*)getImage:(NSURL*)url size:(CGSize)size localURL:(NSURL*)localURL
 {
     NSParameterAssert([NSThread isMainThread]);
 
-    NSString* key = [self getKey:url size:size];
+    NSString* key = [self getKey:url size:size localURL:localURL];
     id val = [cache objectForKey:key];
 
     if ([val isKindOfClass:[UIImage class]])
