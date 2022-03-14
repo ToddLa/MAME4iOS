@@ -5,3 +5,4 @@
 #import "GameInfo.h"
 #import "EmulatorController.h"
 #import "ChooseGameController.h"
+#import "SoftwareList.h"

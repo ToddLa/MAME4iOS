@@ -15,22 +15,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ChooseGameController : UICollectionViewController
 
-@property(nonatomic, strong) void (^selectGameCallback)(GameInfo* info);
+@property(nonatomic, strong) void (^selectGameCallback)(GameInfoDictionary* info);
 @property(nonatomic, strong) UIImage* backgroundImage;
 @property(nonatomic, assign) BOOL hideConsoles;
 
-- (void)setGameList:(NSArray<GameInfo*>*)games;
+- (void)setGameList:(NSArray<GameInfoDictionary*>*)games;
 
 // update a value in a game, and save in sidecar too.
--(GameInfo*)setGame:(GameInfo*)game value:(nullable NSString*)value forKey:(NSString*)key;
+-(GameInfoDictionary*)setGame:(GameInfoDictionary*)game value:(nullable NSString*)value forKey:(NSString*)key;
 
 + (void)reset;
 
 #if TARGET_OS_IOS
-+ (NSUserActivity*)userActivityForGame:(GameInfo*)game;
++ (NSUserActivity*)userActivityForGame:(GameInfoDictionary*)game;
 #endif
 
-+(NSAttributedString*)getGameText:(GameInfo*)game;
++(NSAttributedString*)getGameText:(GameInfoDictionary*)game;
 
 @end
 

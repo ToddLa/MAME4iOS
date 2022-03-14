@@ -15,7 +15,8 @@
 #define RECENT_GAMES_TITLE      @"Recently Played"
 
 // GameInfo is just a dictionary
-typedef NSDictionary<NSString*, NSString*> GameInfo;
+typedef NSDictionary<NSString*, NSString*> GameInfoDictionary;
+typedef GameInfoDictionary* GameInfo;
 
 // keys used in a GameInfo dictionary
 #define kGameInfoType           @"type"
