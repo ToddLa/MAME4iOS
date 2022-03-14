@@ -2011,6 +2011,10 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
 {
     NSString* title = [NSString stringWithFormat:@"%@ (%@)",game.gameTitle, game.gameName];
     
+    // prevent non-file system characters, and duplicate title and name
+    if ([title containsString:@"/"] || [title containsString:@":"] || [game.gameTitle isEqualToString:game.gameName])
+        title = game.gameName;
+    
     FileItemProvider* item = [[FileItemProvider alloc] initWithTitle:title typeIdentifier:@"public.zip-archive" saveHandler:^BOOL(NSURL* url, FileItemProviderProgressHandler progressHandler) {
         NSString *rootPath = [NSString stringWithUTF8String:get_documents_path("")];
         NSArray* files = [self getGameFiles:game allFiles:YES];
@@ -2095,59 +2099,6 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
         activity.suggestedInvocationPhrase = title;
     }
     return activity;
-}
--(INVoiceShortcut*)getVoiceShortcut:(NSUserActivity*)activity API_AVAILABLE(ios(12.0)) {
-    __block INVoiceShortcut* found_shortcut = nil;
-    __block NSTimeInterval time = [NSDate timeIntervalSinceReferenceDate];
-    dispatch_group_t group = dispatch_group_create();
-    
-    dispatch_group_enter(group);
-    [INVoiceShortcutCenter.sharedCenter getAllVoiceShortcutsWithCompletion:^(NSArray<INVoiceShortcut*>* shortcuts, NSError* error) {
-        time = [NSDate timeIntervalSinceReferenceDate] - time;
-        NSLog(@"getAllVoiceShortcuts took %0.3fsec", time);
-        for (INVoiceShortcut* shortcut in shortcuts) {
-            NSLog(@"    SHORTCUT: %@", shortcut);
-            if ([shortcut.shortcut.userActivity.activityType isEqual:activity.activityType] &&
-                [shortcut.shortcut.userActivity.persistentIdentifier isEqual:activity.persistentIdentifier]) {
-                NSLog(@"    **** FOUND ACTIVITY: %@", activity);
-                found_shortcut = shortcut;
-            }
-        }
-        dispatch_group_leave(group);
-    }];
-    dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.200 * NSEC_PER_SEC)));
-    return found_shortcut;
-}
--(void)siri:(NSDictionary*)game activity:(NSUserActivity*)activity shortcut:(INVoiceShortcut*)shortcut API_AVAILABLE(ios(12.0)){
-    UIViewController* viewController;
-    
-    if (shortcut == nil) {
-        INShortcut* shortcut = [[INShortcut alloc] initWithUserActivity:activity];
-        viewController = [[INUIAddVoiceShortcutViewController alloc] initWithShortcut:shortcut];
-    }
-    else {
-        viewController = [[INUIEditVoiceShortcutViewController alloc] initWithVoiceShortcut:shortcut];
-    }
-    viewController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [(id)viewController setDelegate:self];
-    [self presentViewController:viewController animated:YES completion:nil];
-}
-// INUIAddVoiceShortcutViewControllerDelegate
-- (void)addVoiceShortcutViewController:(INUIAddVoiceShortcutViewController *)controller didFinishWithVoiceShortcut:(INVoiceShortcut *)voiceShortcut error:(NSError *) error API_AVAILABLE(ios(12.0)) {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-- (void)addVoiceShortcutViewControllerDidCancel:(INUIAddVoiceShortcutViewController *)controller API_AVAILABLE(ios(12.0)) {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-// INUIEditVoiceShortcutViewControllerDelegate
-- (void)editVoiceShortcutViewController:(INUIEditVoiceShortcutViewController *)controller didUpdateVoiceShortcut:(INVoiceShortcut *)voiceShortcut error: (NSError *)error API_AVAILABLE(ios(12.0)) {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-- (void)editVoiceShortcutViewController:(INUIEditVoiceShortcutViewController *)controller didDeleteVoiceShortcutWithIdentifier:(NSUUID *)deletedVoiceShortcutIdentifier API_AVAILABLE(ios(12.0)) {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-- (void)editVoiceShortcutViewControllerDidCancel:(INUIEditVoiceShortcutViewController *)controller API_AVAILABLE(ios(12.0)) {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 #endif
 
@@ -2239,19 +2190,32 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
         }]
     ]];
     
-#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
-    if (@available(iOS 12.0, *)) {
-        NSUserActivity* activity = [ChooseGameController userActivityForGame:game];
-        INVoiceShortcut* shortcut = [self getVoiceShortcut:activity];
-        if (activity != nil) {
-            actions = [actions arrayByAddingObjectsFromArray:@[
-                [UIAlertAction actionWithTitle:@"Add to Siri" symbol:(shortcut ? @"checkmark.circle" : @"plus.circle") style:UIAlertActionStyleDefault handler:^(id action) {
-                    [self siri:game activity:activity shortcut:shortcut];
-                }]
-            ]];
-        }
+    // Paste image
+    if (!game.gameIsFake && UIPasteboard.generalPasteboard.hasImages) {
+        actions = [actions arrayByAddingObjectsFromArray:@[
+            [UIAlertAction actionWithTitle:@"Paste Image" symbol:@"photo" style:UIAlertActionStyleDefault handler:^(id action) {
+                UIImage* image = UIPasteboard.generalPasteboard.image;
+                if (image == nil)
+                    return;
+                NSData* data = UIImagePNGRepresentation(image);
+                if (data == nil)
+                    return;
+            
+                [data writeToURL:game.gameLocalImageURL atomically:YES];
+                [ImageCache.sharedInstance flush];
+                [self updateImage:game.gameLocalImageURL];
+            }]
+        ]];
     }
-#endif
+    
+    // Edit
+    if (game.gameIsSoftware) {
+        actions = [actions arrayByAddingObjectsFromArray:@[
+            [UIAlertAction actionWithTitle:@"Edit" symbol:@"pencil" style:UIAlertActionStyleDefault handler:^(id action) {
+                [self edit:game];
+            }]
+        ]];
+    }
 
     if (!game.gameIsFake) {
         actions = [actions arrayByAddingObjectsFromArray:@[

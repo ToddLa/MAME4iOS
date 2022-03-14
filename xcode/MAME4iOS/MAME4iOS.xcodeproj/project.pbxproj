@@ -141,6 +141,8 @@
 		EF7D4AAB27B990AB002528B7 /* shaders in Resources */ = {isa = PBXBuildFile; fileRef = EF7D4AA927B990AA002528B7 /* shaders */; };
 		EF7D4AAD27B990BF002528B7 /* software in Resources */ = {isa = PBXBuildFile; fileRef = EF7D4AAC27B990BF002528B7 /* software */; };
 		EF7D4AAE27B990BF002528B7 /* software in Resources */ = {isa = PBXBuildFile; fileRef = EF7D4AAC27B990BF002528B7 /* software */; };
+		EF81FA7F27DF9D9A001FBD3B /* ChooseGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF81FA7E27DF9D9A001FBD3B /* ChooseGameController.swift */; };
+		EF81FA8027DF9D9A001FBD3B /* ChooseGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF81FA7E27DF9D9A001FBD3B /* ChooseGameController.swift */; };
 		EF8409A2260CEFAB00FAC3CF /* AVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8409A1260CEFAB00FAC3CF /* AVPlayerView.m */; };
 		EF8409A3260CEFAB00FAC3CF /* AVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF8409A1260CEFAB00FAC3CF /* AVPlayerView.m */; };
 		EF8409A9260CF3F200FAC3CF /* whiteHDR.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = EF8409A8260CF3F200FAC3CF /* whiteHDR.mp4 */; };
@@ -425,6 +427,7 @@
 		EF7D4AA627B6FA90002528B7 /* TVAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVAlertController.swift; sourceTree = "<group>"; };
 		EF7D4AA927B990AA002528B7 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = "../../iOS-res/shaders"; sourceTree = "<group>"; };
 		EF7D4AAC27B990BF002528B7 /* software */ = {isa = PBXFileReference; lastKnownFileType = folder; name = software; path = "../../iOS-res/software"; sourceTree = "<group>"; };
+		EF81FA7E27DF9D9A001FBD3B /* ChooseGameController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChooseGameController.swift; sourceTree = "<group>"; };
 		EF8409A0260CEFAB00FAC3CF /* AVPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVPlayerView.h; sourceTree = "<group>"; };
 		EF8409A1260CEFAB00FAC3CF /* AVPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVPlayerView.m; sourceTree = "<group>"; };
 		EF8409A8260CF3F200FAC3CF /* whiteHDR.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = whiteHDR.mp4; path = "../../iOS-res/whiteHDR.mp4"; sourceTree = "<group>"; };
@@ -657,6 +660,7 @@
 				EF1741D5261BB2D600DE8386 /* GameInfo.m */,
 				EF19F22E235D1C0300C8EE7F /* ChooseGameController.h */,
 				EF19F229235D1BDF00C8EE7F /* ChooseGameController.m */,
+				EF81FA7E27DF9D9A001FBD3B /* ChooseGameController.swift */,
 				CEE680B41635BB4900051BC2 /* EmulatorController.h */,
 				CEE680B51635BB4900051BC2 /* EmulatorController.m */,
 				EF31447B27BB1E81002C3C6A /* ControllerButtonPress.swift */,
@@ -1217,6 +1221,7 @@
 				EFEEA4ED25CC8A2F00314132 /* MacMenu.m in Sources */,
 				EF8EAA86244F7F5D00DA02BB /* SteamControllerManager.m in Sources */,
 				92A533A521EBDBAD0089FBB9 /* GCDWebServerResponse.m in Sources */,
+				EF81FA7F27DF9D9A001FBD3B /* ChooseGameController.swift in Sources */,
 				EFE4B6AB2453D7F80009A6F1 /* InfoDatabase.m in Sources */,
 				925ABCB61E46DCC500997182 /* InputOptionController.m in Sources */,
 				92A533C321EBDBAD0089FBB9 /* GCDWebServerMultiPartFormRequest.m in Sources */,
@@ -1285,6 +1290,7 @@
 				EF941F0124427D1200D58F7F /* OptionsTableViewController.m in Sources */,
 				926C771D21F5034100103EDE /* TVInputOptionsController.m in Sources */,
 				92A5332521EBC7F40089FBB9 /* KeyboardView.m in Sources */,
+				EF81FA8027DF9D9A001FBD3B /* ChooseGameController.swift in Sources */,
 				EFB3C6D724890F6200F44780 /* simpleCRT.metal in Sources */,
 				EFB7B2182479FBD900AD96A4 /* MetalView.m in Sources */,
 				EF23D332243CB9CF006B3EE2 /* PopupSegmentedControl.m in Sources */,
