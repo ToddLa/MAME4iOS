@@ -1803,9 +1803,6 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
 
     if (system == nil)
     {
-        if (self.presentedViewController != nil) {
-            
-        }
         NSArray* list = [self getSystemsForGame:game];
         NSString* title = [ChooseGameController getGameText:game layoutMode:LayoutSmall].string;
 
