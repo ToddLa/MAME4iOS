@@ -32,6 +32,14 @@
 * remember and try to restore the selected item in Choose Game UX
 * added a "Group by Software" option, this will create sections by Software List name not Machine/System name
 * HUD on tvOS works with any game controller, when HUD is enabled in-game menu is the HUD.
+* Filter NTSC and PAL Software Lists.
+    - uses adhoc method based on Machine description.
+* Added "Paste Image" to set the title image used in Choose Game UX.
+* Added "Edit..." to context menu of non-software list games.
+    - user can change the Description, Year, and Manufacturer
+* Added "Custom Options" (aka Custom Commandline)
+* Support input from a touch screen LIGHTGUN if the machine wants 8way input and the stick is in digital mode.
+    - fix for `TERM2` (aka Terminator 2 - Judgment Day) and others.
 
 ## ROMless Arcade Machines
 
