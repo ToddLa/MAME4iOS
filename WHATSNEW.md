@@ -38,8 +38,6 @@
 * Added "Edit..." to context menu of non-software list games.
     - user can change the Description, Year, and Manufacturer
 * Added "Custom Options" (aka Custom Commandline)
-* Support input from a touch screen LIGHTGUN if the machine wants 8way input and the stick is in digital mode.
-    - fix for `TERM2` (aka Terminator 2 - Judgment Day) and others.
 
 ## ROMless Arcade Machines
 

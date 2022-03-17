@@ -1792,6 +1792,9 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
     // add or move to front of the recent game MRU list...
     [self setRecent:game isRecent:TRUE];
     
+    // add any custom options
+    game = [self addCustomOptions:game];
+    
     // tell the code upstream that the user had selected a game to play!
     if (self.selectGameCallback != nil)
         self.selectGameCallback(game);
@@ -1851,10 +1854,30 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
             }
         }
     }
+
+    // add any custom options
+    game = [self addCustomOptions:game];
     
     // tell the code upstream that the user had selected a game to play!
     if (self.selectGameCallback != nil)
         self.selectGameCallback(game);
+}
+
+-(GameInfoDictionary*) addCustomOptions:(GameInfoDictionary*)game
+{
+// TODO: this is a test, get custom cmd line somewhere
+#if defined(DEBUG)
+    // pass a custom command line as a test
+    if (TRUE)
+    {
+        game = [game gameSetValue:@"-flipx -flipy" forKey:kGameInfoCustomCmdline];
+    }
+    else
+    {
+        game = [game gameSetValue:@"" forKey:kGameInfoCustomCmdline];
+    }
+#endif
+    return game;
 }
 
 -(NSArray*)getSystemsForGame:(NSDictionary*)game

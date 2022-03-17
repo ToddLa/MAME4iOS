@@ -252,7 +252,6 @@
     {
         NSLog(@"installSoftware:%@, found: %@ in %@:%@ ", path.lastPathComponent, info.gameDescription, info.gameSoftwareList, info.gameName);
         
-        // TODO: should we overwrite any current metadata? it might be customized....
         path = [path stringByAppendingPathExtension:@"json"];
         data = [NSJSONSerialization dataWithJSONObject:info options:NSJSONWritingPrettyPrinted error:nil];
         [data writeToFile:path atomically:NO];
