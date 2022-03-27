@@ -1985,7 +1985,7 @@ NSAttributedString* attributedString(NSString* text, UIFont* font, UIColor* colo
             // if we have deleted the last game, excpet for the MAMEMENU, then exit with no game selected and let a re-scan happen.
             if ([self->_gameList count] <= 1) {
                 if (self.selectGameCallback != nil)
-                    self.selectGameCallback(nil);
+                    self.selectGameCallback(@{});
             }
         }
         else {

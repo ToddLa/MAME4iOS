@@ -131,6 +131,11 @@
 		EF490D97277A5E0E00407865 /* cheat.7z in Resources */ = {isa = PBXBuildFile; fileRef = EF490D94277A5E0E00407865 /* cheat.7z */; };
 		EF490D99277A5E0E00407865 /* cheat.zip in Resources */ = {isa = PBXBuildFile; fileRef = EF490D95277A5E0E00407865 /* cheat.zip */; };
 		EF490D9A277A5E0E00407865 /* cheat.zip in Resources */ = {isa = PBXBuildFile; fileRef = EF490D95277A5E0E00407865 /* cheat.zip */; };
+		EF6B0D0127E8EB8A00655359 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6B0D0027E8EB8A00655359 /* GameInfo.swift */; };
+		EF6B0D0227E8EB8A00655359 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6B0D0027E8EB8A00655359 /* GameInfo.swift */; };
+		EF6B0D0327E8EB8A00655359 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6B0D0027E8EB8A00655359 /* GameInfo.swift */; };
+		EF72F8E627EB896800157065 /* ChooseGameController+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF72F8E527EB896800157065 /* ChooseGameController+Info.swift */; };
+		EF72F8E727EB896800157065 /* ChooseGameController+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF72F8E527EB896800157065 /* ChooseGameController+Info.swift */; };
 		EF7B232C23FD0469001FF51D /* (null) in Sources */ = {isa = PBXBuildFile; };
 		EF7B232D23FD0469001FF51D /* (null) in Sources */ = {isa = PBXBuildFile; };
 		EF7D116527348BDD00E61BB9 /* hash.zip in Resources */ = {isa = PBXBuildFile; fileRef = EF7D116427348BDD00E61BB9 /* hash.zip */; };
@@ -421,6 +426,8 @@
 		EF55DE312533C21E004E37EF /* MAME4iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MAME4iOS.xcconfig; sourceTree = "<group>"; };
 		EF55DE5A2534C304004E37EF /* TVServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TVServices.framework; path = Library/Frameworks/TVServices.framework; sourceTree = DEVELOPER_DIR; };
 		EF67E11524B8972100AFF489 /* MacMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacMenu.m; sourceTree = "<group>"; };
+		EF6B0D0027E8EB8A00655359 /* GameInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInfo.swift; sourceTree = "<group>"; };
+		EF72F8E527EB896800157065 /* ChooseGameController+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChooseGameController+Info.swift"; sourceTree = "<group>"; };
 		EF7D116427348BDD00E61BB9 /* hash.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = hash.zip; path = "../../iOS-res/hash.zip"; sourceTree = "<group>"; };
 		EF7D4AA627B6FA90002528B7 /* TVAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVAlertController.swift; sourceTree = "<group>"; };
 		EF7D4AA927B990AA002528B7 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = "../../iOS-res/shaders"; sourceTree = "<group>"; };
@@ -655,8 +662,10 @@
 				EF67E11524B8972100AFF489 /* MacMenu.m */,
 				EF1741D4261BB2D600DE8386 /* GameInfo.h */,
 				EF1741D5261BB2D600DE8386 /* GameInfo.m */,
+				EF6B0D0027E8EB8A00655359 /* GameInfo.swift */,
 				EF19F22E235D1C0300C8EE7F /* ChooseGameController.h */,
 				EF19F229235D1BDF00C8EE7F /* ChooseGameController.m */,
+				EF72F8E527EB896800157065 /* ChooseGameController+Info.swift */,
 				CEE680B41635BB4900051BC2 /* EmulatorController.h */,
 				CEE680B51635BB4900051BC2 /* EmulatorController.m */,
 				EF31447B27BB1E81002C3C6A /* ControllerButtonPress.swift */,
@@ -1035,6 +1044,7 @@
 					EFEEA4B025C9D41E00314132 = {
 						CreatedOnToolsVersion = 12.4;
 						DevelopmentTeam = ABC8675309;
+						LastSwiftMigration = 1330;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1188,10 +1198,12 @@
 				92A533C621EBDBAD0089FBB9 /* GCDWebServerDataRequest.m in Sources */,
 				EF8E428B249FE5410049C84C /* ulTron.metal in Sources */,
 				EF8E4283249915F30049C84C /* lineTron.metal in Sources */,
+				EF72F8E627EB896800157065 /* ChooseGameController+Info.swift in Sources */,
 				92A533A821EBDBAD0089FBB9 /* GCDWebServerRequest.m in Sources */,
 				EF474B892791E42900578663 /* EmulatorController+EmulatorKeyboardSupport.swift in Sources */,
 				EFB7B21C247ACFE300AD96A4 /* MameShaders.metal in Sources */,
 				925ABCA91E46DCC500997182 /* OptionsController.m in Sources */,
+				EF6B0D0127E8EB8A00655359 /* GameInfo.swift in Sources */,
 				EFE003382638ACA000E42246 /* XmlFile.m in Sources */,
 				EF8EAA8A244F7F5D00DA02BB /* SteamControllerExtendedGamepad.m in Sources */,
 				EF8EAA8C244F7F5D00DA02BB /* SteamControllerInput.m in Sources */,
@@ -1270,6 +1282,7 @@
 				EF24BAFD24C786A900D9C55A /* SkinManager.m in Sources */,
 				92A533AC21EBDBAD0089FBB9 /* GCDWebServerFunctions.m in Sources */,
 				EF7B232D23FD0469001FF51D /* (null) in Sources */,
+				EF6B0D0227E8EB8A00655359 /* GameInfo.swift in Sources */,
 				92A533AF21EBDBAD0089FBB9 /* GCDWebServer.m in Sources */,
 				EF8EAA8D244F7F5D00DA02BB /* SteamControllerInput.m in Sources */,
 				92A533B521EBDBAD0089FBB9 /* GCDWebServerErrorResponse.m in Sources */,
@@ -1285,6 +1298,7 @@
 				EF941F0124427D1200D58F7F /* OptionsTableViewController.m in Sources */,
 				926C771D21F5034100103EDE /* TVInputOptionsController.m in Sources */,
 				92A5332521EBC7F40089FBB9 /* KeyboardView.m in Sources */,
+				EF72F8E727EB896800157065 /* ChooseGameController+Info.swift in Sources */,
 				EFB3C6D724890F6200F44780 /* simpleCRT.metal in Sources */,
 				EFB7B2182479FBD900AD96A4 /* MetalView.m in Sources */,
 				EF23D332243CB9CF006B3EE2 /* PopupSegmentedControl.m in Sources */,
@@ -1297,6 +1311,7 @@
 			files = (
 				EFEEA4CA25C9D4B700314132 /* ContentProvider.m in Sources */,
 				EF1741D9261BB2D600DE8386 /* GameInfo.m in Sources */,
+				EF6B0D0327E8EB8A00655359 /* GameInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1393,6 +1408,7 @@
 		92ECB8FB21EA985000D1E3D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Launch Image";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1461,6 +1477,7 @@
 		92ECB8FC21EA985000D1E3D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Launch Image";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1664,6 +1681,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 13.4;
 			};
@@ -1700,6 +1719,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 13.4;
 			};
